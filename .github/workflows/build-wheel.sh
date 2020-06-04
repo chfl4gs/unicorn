@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e -x
 
-cd binding/python
+cd bindings/python
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
