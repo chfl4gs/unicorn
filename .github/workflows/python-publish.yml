@@ -16,5 +16,5 @@ jobs:
         cd bindings/python
         docker run --rm dockcross/manylinux-x86 > ./dockcross
         chmod +x ./dockcross
-        ./dockcross $HOME/unicorn/unicorn/.github/workflows/build-wheel.sh
+        ./dockcross $HOME/work/unicorn/unicorn/.github/workflows/build-wheel.sh
         ls wheelhouse/
