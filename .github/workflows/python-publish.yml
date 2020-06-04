@@ -4,13 +4,15 @@ on: [push]
 
 jobs:
   myjob:
-    runs-on: ubuntu-18.04 # linux required if you want to use docker
+    runs-on: ubuntu-latest
     steps:
-    # Those steps are executed directly on the VM
-    - run: ls /
-    - run: echo $HOME
-    - name: Add a file
-      run: touch $HOME/stuff.txt
-    # Those steps are actions, which may run inside a container
     - uses: actions/checkout@v1
-    - uses: docker://dockcross/manylinux-x64
+    - name: Pull docker images
+      run: |
+        docker pulL dockcross/manylinux-x86
+    - name: Running docker
+      run: |
+        docker run --rm dockcross/manylinux-x86 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross .gitbub/workflows/build-wheel.sh
+        ls wheelhouse/
