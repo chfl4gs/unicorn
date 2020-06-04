@@ -15,5 +15,5 @@ jobs:
         cd bindings/python
         docker run --rm dockcross/manylinux-x86 > ./dockcross
         chmod +x ./dockcross
-        ./dockcross ../../build-wheel.sh
+        ./dockcross ./build-wheel.sh
         ls wheelhouse/
