@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e -x
 
-cd bindings/python
-
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
     ${PYBIN}/pip wheel . -w wheelhouse/
