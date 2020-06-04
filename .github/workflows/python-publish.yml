@@ -14,5 +14,5 @@ jobs:
       run: |
         docker run --rm dockcross/manylinux-x86 > ./dockcross
         chmod +x ./dockcross
-        ./dockcross .gitbub/workflows/build-wheel.sh
+        ./dockcross .github/workflows/build-wheel.sh
         ls wheelhouse/
