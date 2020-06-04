@@ -12,8 +12,9 @@ jobs:
         docker pull dockcross/manylinux-x86
     - name: Running docker
       run: |
+        pwd
         cd bindings/python
         docker run --rm dockcross/manylinux-x86 > ./dockcross
         chmod +x ./dockcross
-        ./dockcross $HOME/.github/workflows/build-wheel.sh
+        ./dockcross $HOME/unicorn/.github/workflows/build-wheel.sh
         ls wheelhouse/
