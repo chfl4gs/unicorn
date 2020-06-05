@@ -9,15 +9,18 @@ jobs:
     - uses: actions/checkout@v1
     - name: Running distribution build 
       run: |
-        docker run --rm -v `pwd`/:/work dockcross/manylinux-x86 > ./dockcross
+        docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/manylinux-x64 > ./dockcross
+        docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
         docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x86 > ./dockcross
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
         docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x64 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross bindings/python/build_wheel.sh
+        docker run --rm -v `pwd`/:/work dockcross/windows-x86 > ./dockcross
         chmod +x ./dockcross
         ls -lah bindings/python/dist
