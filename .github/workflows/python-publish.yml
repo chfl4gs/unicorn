@@ -11,7 +11,7 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
         platform: [x32, x64]
         exclude:
-          - { platform: x86, os: macos-latest }
+          - { platform: x32, os: macos-latest }
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
