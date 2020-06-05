@@ -48,7 +48,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
          name: unicorn-packages
-         path: dist/*.whl
+         path: dist/*
 
     - name: Publish distribution 📦 to PyPI
       if: startsWith(github.event.ref, 'refs/tags')
