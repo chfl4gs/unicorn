@@ -1,28 +1,48 @@
-name: run Docker
+name: PyPI 📦 Distribution
 
 on: [push]
 
 jobs:
-  myjob:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+        platform: [x32, x64]
+        exclude:
+          - { platform: x32, os: macos-latest }
     steps:
-    - uses: actions/checkout@v1
-    - name: Running distribution build 
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Set up MSVC
+      if: matrix.os == 'windows-latest'
+      uses: microsoft/setup-msbuild@v1
+    - name: Install dependencies
       run: |
-        docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x86 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x64 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        ls -lah release
+        pip install setuptools wheel
+    - name: Build distribution 📦
+      shell: bash 
+      run: |
+        if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
+             cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
+        elif [ ${{ matrix.os }} == 'macos-latest' ]; then
+             cd bindings/python && python setup.py bdist_wheel
+        else
+             docker run --rm -v `pwd`/:/work dockcross/manylinux1-{{ $matrix.platform }} > ./dockcross
+             chmod +x ./dockcross
+             ./dockcross bindings/python/build_wheel.sh
+        fi
     - uses: actions/upload-artifact@v2
       with:
          name: unicorn-pypi
-         path: release/*
+         path: dist/*
+    - name: Publish distribution 📦 to PyPI
+      if: startsWith(github.event.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@master
+      with:
+        username: __token__
+        password: ${{ secrets.pypi_pass }}
