@@ -14,3 +14,4 @@ for i in *.whl
   do
     auditwheel repair $i
 done
+ls -lah
