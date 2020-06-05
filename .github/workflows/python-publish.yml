@@ -23,14 +23,13 @@ jobs:
       uses: microsoft/setup-msbuild@v1
     - name: Install dependencies
       run: |
-        pip install setuptools wheel auditwheel
+        pip install setuptools wheel
     - name: Build distribution 📦
       shell: bash 
       run: |
         if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
              cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
-             auditwheel repair dist/*.whl
-             mv -f wheelhouse/*.whl dist/
+             ls -lah
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
              chmod +x ./dockcross
@@ -43,8 +42,7 @@ jobs:
              cd bindings/python && ls -lah
         else 
              cd bindings/python && python setup.py bdist_wheel
-             auditwheel repair dist/*.whl
-             mv -f wheelhouse/*.whl dist/
+             ls -lah
         fi
     - uses: actions/upload-artifact@v2
       with:
