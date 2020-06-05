@@ -13,8 +13,6 @@ run_docker() {
 
 build() {
   ARCH=$1
-  cd /unicorn && make clean
-  cd bindings/python
   /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
   cd dist
   for i in *${ARCH}.whl
@@ -22,6 +20,7 @@ build() {
     auditwheel repair $i
   done
   mv -f wheelhouse/*${ARCH}.whl .
+  cd /unicorn && make clean
 }
 
 if [ "$1" = "build" ]; then
