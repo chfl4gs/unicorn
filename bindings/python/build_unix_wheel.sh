@@ -28,4 +28,4 @@ elif [ "$#" -eq 1 ]; then
 else
   run_docker quay.io/pypa/manylinux1_i686 i686
   run_docker quay.io/pypa/manylinux1_x86_64 x86_64
-fI
+fi
