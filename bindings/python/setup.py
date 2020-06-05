@@ -16,6 +16,7 @@ from distutils.command.build import build
 from distutils.command.sdist import sdist
 from setuptools.command.bdist_egg import bdist_egg
 from setuptools.command.develop import develop
+from wheel.bdist_wheel import bdist_wheel
 
 SYSTEM = sys.platform
 
@@ -224,6 +225,11 @@ class custom_bdist_egg(bdist_egg):
         self.run_command('build')
         return bdist_egg.run(self)
 
+class custom_bdist_wheel(bdist_wheel):
+    def finalize_options(self):
+        bdist_wheel.finalize_options(self)
+        self.root_is_pure = False
+
 def dummy_src():
     return []
 
@@ -283,7 +289,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     requires=['ctypes'],
-    cmdclass={'build': custom_build, 'develop': custom_develop, 'sdist': custom_sdist, 'bdist_egg': custom_bdist_egg},
+    cmdclass={'build': custom_build, 'develop': custom_develop, 'sdist': custom_sdist, 'bdist_egg': custom_bdist_egg, 'bdist_wheel': custom_bdist_wheel},
     zip_safe=True,
     include_package_data=True,
     is_pure=False,
