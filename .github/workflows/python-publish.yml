@@ -33,6 +33,7 @@ jobs:
       run: |
         if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
              cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
+             rm dist/*.tar.gz
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
              chmod +x ./dockcross
@@ -42,7 +43,7 @@ jobs:
              chmod +x ./dockcross
              ./dockcross bindings/python/build_wheel.sh
         else 
-             cd bindings/python && python setup.py bdist_wheel
+             cd bindings/python && python setup.py sdist bdist_wheel
         fi
 
     - uses: actions/upload-artifact@v2
