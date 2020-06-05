@@ -27,3 +27,7 @@ jobs:
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
         ls -lah release
+    - uses: actions/upload-artifact@v2
+      with:
+         name: unicorn-pypi
+         path: release
