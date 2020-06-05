@@ -7,13 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Pull docker images
-      run: |
-        docker pull dockcross/manylinux-x86
-        docker pull dockcross/manylinux-x64
-        docker pull dockcross/manylinux2010-x86
-        docker pull dockcross/manylinux2010-x64
-    - name: Running docker
+    - name: Running distribution build 
       run: |
         docker run --rm -v `pwd`/:/work dockcross/manylinux-x86 > ./dockcross
         chmod +x ./dockcross
