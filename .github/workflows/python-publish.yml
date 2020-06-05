@@ -29,25 +29,22 @@ jobs:
       run: |
         if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
              cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
-             ls -lah
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
              chmod +x ./dockcross
              ./dockcross bindings/python/build_wheel.sh
-             cd bindings/python && ls -lah
         elif [ ${{ matrix.platform }} == 'x64' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
              chmod +x ./dockcross
              ./dockcross bindings/python/build_wheel.sh
-             cd bindings/python && ls -lah
         else 
              cd bindings/python && python setup.py bdist_wheel
-             ls -lah
+             ls -lah dist
         fi
     - uses: actions/upload-artifact@v2
       with:
          name: unicorn-pypi
-         path: dist/*
+         path: dist/*.whl
     - name: Publish distribution 📦 to PyPI
       if: startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
