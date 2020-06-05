@@ -57,3 +57,4 @@ jobs:
       with:
         username: __token__
         password: ${{ secrets.pypi_pass }}
+        packages_dir: ${{ github.workspace }}/bindings/python/dist/
