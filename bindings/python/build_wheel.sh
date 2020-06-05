@@ -4,7 +4,7 @@ set -e -x
 cd bindings/python
 
 # Compile wheels
-if [ -f dist/unicorn-*.tar.gz ]; then
+if [ ! -f dist/unicorn-*.tar.gz ]; then
    /opt/python/cp36-cp36m/bin/python setup.py sdist
 fi
 if [ -f /opt/python/cp36-cp36m/bin/python ];then
@@ -12,7 +12,8 @@ if [ -f /opt/python/cp36-cp36m/bin/python ];then
 else
   python setup.py bdist_wheel
 fi
-auditwheel repair dist/*.whl
+cd dist
+auditwheel repair *.whl
 
 if [ ! -d /work/release ]; then
    mkdir /work/release
