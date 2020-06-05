@@ -10,8 +10,6 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         platform: [x32, x64]
-        exclude:
-          - { platform: x32, os: macos-latest }
     steps:
     - uses: actions/checkout@v2
 
