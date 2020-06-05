@@ -5,7 +5,7 @@ run_docker() {
   cd `dirname $0`
   docker pull $1
   docker run --rm -ti --name unicorn \
-    -v `pwd`/../:/unicorn -w /unicorn/bindings/python \
+    -v `pwd`/../../:/unicorn -w /unicorn/bindings/python \
     -td $1 /bin/bash
   docker exec unicorn bash -c "./build_unix_wheel.sh build $2"
   docker stop unicorn
