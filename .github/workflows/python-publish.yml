@@ -14,16 +14,20 @@ jobs:
           - { platform: x32, os: macos-latest }
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: '3.x'
+
     - name: Set up MSVC
       if: matrix.os == 'windows-latest'
       uses: microsoft/setup-msbuild@v1
+
     - name: Install dependencies
       run: |
         pip install setuptools wheel
+
     - name: Build distribution 📦
       shell: bash 
       run: |
@@ -39,12 +43,13 @@ jobs:
              ./dockcross bindings/python/build_wheel.sh
         else 
              cd bindings/python && python setup.py bdist_wheel
-             ls -lah dist
         fi
+
     - uses: actions/upload-artifact@v2
       with:
-         name: unicorn-pypi
+         name: unicorn-packages
          path: dist/*.whl
+
     - name: Publish distribution 📦 to PyPI
       if: startsWith(github.event.ref, 'refs/tags')
       uses: pypa/gh-action-pypi-publish@master
