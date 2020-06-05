@@ -12,13 +12,16 @@ run_docker() {
 }
 
 build() {
-  rm -rf ../build
-  rm -rf ../unicorn/lib
-  rm -rf ../unicorn/include
+  ARCH=$1
+  cd /unicorn && make clean
+  cd bindings/python
   /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
   cd dist
-  auditwheel repair *.whl
-  mv -f wheelhouse/*.whl .
+  for i in *${ARCH}.whl
+  do
+    auditwheel repair $i
+  done
+  mv -f wheelhouse/*${ARCH}.whl .
 }
 
 if [ "$1" = "build" ]; then
@@ -28,4 +31,6 @@ elif [ "$#" -eq 1 ]; then
 else
   run_docker quay.io/pypa/manylinux1_i686 i686
   run_docker quay.io/pypa/manylinux1_x86_64 x86_64
+  run_docker dockcross/windows-shared-x86 x86
+  run_docker dockcross/windows-shared-x64 x64
 fi
