@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e -u -x
+set -e -x
 
 function repair_wheel {
     wheel="$1"
