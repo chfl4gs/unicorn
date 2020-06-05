@@ -16,7 +16,6 @@ from distutils.command.build import build as _build
 from distutils.command.sdist import sdist as _sdist
 from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
 from setuptools.command.develop import develop as _develop
-from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
 SYSTEM = sys.platform
 
@@ -225,16 +224,6 @@ class bdist_egg(_bdist_egg):
         self.run_command('build')
         return _bdist_egg.run(self)
 
-class bdist_wheel(_bdist_wheel):
-    def finalize_options(self):
-         _bdist_wheel.finalize_options(self)
-         self.root_is_pure = False
-
-    def get_tag(self):
-        python, abi, plat = _bdist_wheel.get_tag(self)
-        python, abi = 'py2.py3', 'none'
-        return python, abi, plat
-
 def dummy_src():
     return []
 
@@ -294,7 +283,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     requires=['ctypes'],
-    cmdclass={'build': build, 'develop': develop, 'sdist': sdist, 'bdist_egg': bdist_egg, 'bdist_wheel': bdist_wheel},
+    cmdclass={'build': build, 'develop': develop, 'sdist': sdist, 'bdist_egg': bdist_egg},
     zip_safe=True,
     include_package_data=True,
     is_pure=False,
