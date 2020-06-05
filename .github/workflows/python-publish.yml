@@ -47,8 +47,8 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-         name: unicorn-packages
-         path: dist/*
+         name: unicorn-packages-${{ matrix.os }}-${{ matrix.platform }}
+         path: ${{ github.workspace }}/bindings/python/dist/*
 
     - name: Publish distribution 📦 to PyPI
       if: startsWith(github.event.ref, 'refs/tags')
