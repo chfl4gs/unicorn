@@ -19,4 +19,5 @@ if [ ! -d /work/release ]; then
    mkdir /work/release
 fi
 mv -f wheelhouse/*.whl /work/release/
+cd .. && rm -rf dist
 cd /work && make clean
