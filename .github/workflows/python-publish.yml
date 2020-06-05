@@ -33,13 +33,9 @@ jobs:
              cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
              rm dist/*.tar.gz
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
-             docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
-             chmod +x ./dockcross
-             ./dockcross bindings/python/build_wheel.sh
+             docker run --rm -e PLAT=manylinux1_i686 -v `pwd`/:/work quay.io/pypa/manylinux1_i686 linux32 /work/bindings/python/build_wheel.sh
         elif [ ${{ matrix.platform }} == 'x64' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
-             docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
-             chmod +x ./dockcross
-             ./dockcross bindings/python/build_wheel.sh
+             docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`/:/work quay.io/pypa/manylinux1_x86_64 /work/bindings/python/build_wheel.sh 
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'macos-latest' ]; then
              cd bindings/python && python setup.py sdist
         else
