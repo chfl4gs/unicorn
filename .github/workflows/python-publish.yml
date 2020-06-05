@@ -3,7 +3,8 @@ name: PyPI 📦 Distribution
 on: [push]
 
 jobs:
-  deploy:
+  run:
+    name: ${{ env.JOB_NAME }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -32,12 +33,16 @@ jobs:
         if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
              cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
              rm dist/*.tar.gz
+             echo "::set-env name=JOB_NAME::Wheel-win32"
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
              docker run --rm -e PLAT=manylinux1_i686 -v `pwd`/:/work quay.io/pypa/manylinux1_i686 linux32 /work/bindings/python/build_wheel.sh
+             echo "::set-env name=JOB_NAME::Wheel-manylinux1_i686"
         elif [ ${{ matrix.platform }} == 'x64' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
-             docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`/:/work quay.io/pypa/manylinux1_x86_64 /work/bindings/python/build_wheel.sh 
+             docker run --rm -e PLAT=manylinux1_x86_64 -v `pwd`/:/work quay.io/pypa/manylinux1_x86_64 /work/bindings/python/build_wheel.sh
+             echo "::set-env name=JOB_NAME::Wheel-manylinux1_x86_64" 
         elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'macos-latest' ]; then
              cd bindings/python && python setup.py sdist
+             echo "::set-env name=JOB_NAME::sdist"
         else
              cd bindings/python && python setup.py bdist_wheel
         fi
