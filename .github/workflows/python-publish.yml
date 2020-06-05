@@ -42,8 +42,10 @@ jobs:
              docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
              chmod +x ./dockcross
              ./dockcross bindings/python/build_wheel.sh
-        else 
-             cd bindings/python && python setup.py sdist bdist_wheel
+        elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'macosx-latest' ]; then
+             cd bindings/python && python setup.py sdist
+        else
+             cd bindings/python && python setup.py bdist_wheel
         fi
 
     - uses: actions/upload-artifact@v2
