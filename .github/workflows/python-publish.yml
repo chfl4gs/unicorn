@@ -11,7 +11,7 @@ jobs:
         os: [windows-latest, macos-latest, ubuntu-latest]
         platform: [x32, x64]
         exclude:
-          - { platform: x32, os: macos-latest }
+          - { platform: x86, os: macos-latest }
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -29,12 +29,18 @@ jobs:
       run: |
         if [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'windows-latest' ]; then
              cd bindings/python && python setup.py build -p win32 sdist bdist_wheel -p win32
-        elif [ ${{ matrix.os }} == 'macos-latest' ]; then
-             cd bindings/python && python setup.py bdist_wheel
-        else
-             docker run --rm -v `pwd`/:/work dockcross/manylinux1-{{ $matrix.platform }} > ./dockcross
+        elif [ ${{ matrix.platform }} == 'x32' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
+             docker run --rm -v `pwd`/:/work dockcross/manylinux1-x86 > ./dockcross
              chmod +x ./dockcross
              ./dockcross bindings/python/build_wheel.sh
+             cd bindings/python
+        elif [ ${{ matrix.platform }} == 'x64' ] && [ ${{ matrix.os }} == 'ubuntu-latest' ]; then
+             docker run --rm -v `pwd`/:/work dockcross/manylinux1-x64 > ./dockcross
+             chmod +x ./dockcross
+             ./dockcross bindings/python/build_wheel.sh
+             cd bindings/python
+        else 
+             cd bindings/python && python setup.py bdist_wheel
         fi
     - uses: actions/upload-artifact@v2
       with:
