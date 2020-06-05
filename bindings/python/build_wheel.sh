@@ -8,7 +8,7 @@ if [ ! -d /work/release ]; then
 fi
 # Compile wheels
 if [ ! -f /work/release/unicorn-*.tar.gz ]; then
-   python3 setup.py sdist
+   /opt/python/cp36-cp36m/bin/python setup.py sdist
 fi
 if [ -f /opt/python/cp36-cp36m/bin/python ];then
   /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
