@@ -10,5 +10,5 @@ jobs:
     - name: Running dockcross
       run: |
         cd bindings/python
-        ./build_unix_wheel.sh
+        ./build_unix_wheel.sh i686
         ls -lah bindings/python/dist/
