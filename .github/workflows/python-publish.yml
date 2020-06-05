@@ -7,12 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: Pull docker images
+    - name: Running dockcross
       run: |
-        docker pull dockcross/manylinux-x86
-    - name: Running docker
-      run: |
-        docker run --rm dockcross/manylinux-x86 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build-wheel.sh
-        ls wheelhouse/
+        cd bindings/python
+        ./build_unix_wheel.sh
+        ls -lah bindings/python/dist/
