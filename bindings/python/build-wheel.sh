@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -x
 
+cd bindings/python
+
 # Compile wheels
 for i in /opt/python/*
   do
