@@ -15,16 +15,7 @@ jobs:
         docker run --rm -v `pwd`/:/work dockcross/manylinux-x64 > ./dockcross
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x86 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x64 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/windows-shared-x86 > ./dockcross
-        chmod +x ./dockcross
-        ./dockcross bindings/python/build_wheel.sh
-        docker run --rm -v `pwd`/:/work dockcross/windows-shared-x64 > ./dockcross
+        docker run --rm -v `pwd`/:/work dockcross/windows-shared-x64-posix > ./dockcross
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
         ls -lah bindings/python/dist
