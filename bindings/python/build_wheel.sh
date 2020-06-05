@@ -13,5 +13,9 @@ else
   python setup.py bdist_wheel
 fi
 auditwheel repair dist/*.whl
-mv -f wheelhouse/*.whl ../../release/
+
+if [ ! -d /work/release ]; then
+   mkdir /work/release
+fi
+mv -f wheelhouse/*.whl /work/release/
 cd /work && make clean
