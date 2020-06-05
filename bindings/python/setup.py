@@ -12,11 +12,11 @@ import platform
 from distutils import log
 from distutils.core import setup
 from distutils.util import get_platform
-from distutils.command.build import build
-from distutils.command.sdist import sdist
-from setuptools.command.bdist_egg import bdist_egg
-from setuptools.command.develop import develop
-from wheel.bdist_wheel import bdist_wheel
+from distutils.command.build import build as _build
+from distutils.command.sdist import sdist as _sdist
+from setuptools.command.bdist_egg import bdist_egg as _bdist_egg
+from setuptools.command.develop import develop as _develop
+from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
 SYSTEM = sys.platform
 
@@ -199,36 +199,41 @@ def build_libraries():
                 sys.exit(1)
     os.chdir(cwd)
 
-class custom_sdist(sdist):
+class sdist(_sdist):
     def run(self):
         clean_bins()
         copy_sources()
-        return sdist.run(self)
+        return _sdist.run(self)
 
-class custom_build(build):
+class build(_build):
     def run(self):
         if 'LIBUNICORN_PATH' in os.environ:
             log.info("Skipping building C extensions since LIBUNICORN_PATH is set")
         else:
             log.info("Building C extensions")
             build_libraries()
-        return build.run(self)
+        return _build.run(self)
 
-class custom_develop(develop):
+class develop(_develop):
     def run(self):
         log.info("Building C extensions")
         build_libraries()
-        return develop.run(self)
+        return _develop.run(self)
 
-class custom_bdist_egg(bdist_egg):
+class bdist_egg(_bdist_egg):
     def run(self):
         self.run_command('build')
-        return bdist_egg.run(self)
+        return _bdist_egg.run(self)
 
-class custom_bdist_wheel(bdist_wheel):
+class bdist_wheel(_bdist_wheel):
     def finalize_options(self):
-        bdist_wheel.finalize_options(self)
-        self.root_is_pure = False
+         _bdist_wheel.finalize_options(self)
+         self.root_is_pure = False
+
+    def get_tag(self):
+        python, abi, plat = _bdist_wheel.get_tag(self)
+        python, abi = 'py2.py3', 'none'
+        return python, abi, plat
 
 def dummy_src():
     return []
@@ -289,7 +294,7 @@ setup(
         'Programming Language :: Python :: 3',
     ],
     requires=['ctypes'],
-    cmdclass={'build': custom_build, 'develop': custom_develop, 'sdist': custom_sdist, 'bdist_egg': custom_bdist_egg, 'bdist_wheel': custom_bdist_wheel},
+    cmdclass={'build': build, 'develop': develop, 'sdist': sdist, 'bdist_egg': bdist_egg, 'bdist_wheel': bdist_wheel},
     zip_safe=True,
     include_package_data=True,
     is_pure=False,
