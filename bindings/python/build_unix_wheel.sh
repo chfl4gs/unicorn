@@ -13,6 +13,7 @@ run_docker() {
 
 build() {
   ARCH=$1
+  /opt/python/cp36-cp36m/bin/python setup.py bdist
   /opt/python/cp36-cp36m/bin/python setup.py bdist_wheel
   cd dist
   for i in *${ARCH}.whl
