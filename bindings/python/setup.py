@@ -224,6 +224,9 @@ class custom_bdist_egg(bdist_egg):
         build_libraries()
         return bdist_egg.run(self)
 
+def dummy_src():
+    return []
+
 if 'bdist_wheel' in sys.argv and '--plat-name' not in sys.argv:
     idx = sys.argv.index('bdist_wheel') + 1
     sys.argv.insert(idx, '--plat-name')
