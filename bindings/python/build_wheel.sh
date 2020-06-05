@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e -x
 
+cd /work/bindings/python
+
 function repair_wheel {
     wheel="$1"
     if ! auditwheel show "$wheel"; then
@@ -13,7 +15,7 @@ function repair_wheel {
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
-    "${PYBIN}/pip" wheel /work/bindings/python/ --no-deps -w wheelhouse/
+    "${PYBIN}/python" setup.py bdist_wheel -b wheelhouse
 done
 
 # Bundle external shared libraries into the wheels
