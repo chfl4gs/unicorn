@@ -10,9 +10,27 @@ jobs:
     - name: Pull docker images
       run: |
         docker pull dockcross/manylinux-x86
+        docker pull dockcross/manylinux-x64
+        docker pull dockcross/manylinux2010-x86
+        docker pull dockcross/manylinux2010-x64
     - name: Running docker
       run: |
         docker run --rm -v `pwd`/:/work dockcross/manylinux-x86 > ./dockcross
         chmod +x ./dockcross
         ./dockcross bindings/python/build_wheel.sh
-        ls bindings/python/dist
+        docker run --rm -v `pwd`/:/work dockcross/manylinux-x64 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross bindings/python/build_wheel.sh
+        docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x86 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross bindings/python/build_wheel.sh
+        docker run --rm -v `pwd`/:/work dockcross/manylinux2010-x64 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross bindings/python/build_wheel.sh
+        docker run --rm -v `pwd`/:/work dockcross/windows-shared-x86 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross bindings/python/build_wheel.sh
+        docker run --rm -v `pwd`/:/work dockcross/windows-shared-x64 > ./dockcross
+        chmod +x ./dockcross
+        ./dockcross bindings/python/build_wheel.sh
+        ls -lah bindings/python/dist
