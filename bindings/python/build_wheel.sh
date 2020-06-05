@@ -12,4 +12,6 @@ if [ -f /opt/python/cp36-cp36m/bin/python ];then
 else
   python setup.py bdist_wheel
 fi
+auditwheel repair dist/*.whl
+mv -f wheelhouse/*.whl ../../release/
 cd /work && make clean
