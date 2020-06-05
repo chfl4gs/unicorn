@@ -15,7 +15,7 @@ function repair_wheel {
 
 # Compile wheels
 for PYBIN in /opt/python/*/bin; do
-    "${PYBIN}/python" setup.py bdist_wheel -b wheelhouse
+    "${PYBIN}/python" setup.py bdist_wheel -d wheelhouse
 done
 
 # Bundle external shared libraries into the wheels
