@@ -7,7 +7,6 @@ cd bindings/python
 for i in /opt/python/*
   do
     $i/bin/python setup.py bdist
-    strip build/*/*.so
     $i/bin/python setup.py bdist_wheel
 done
 
