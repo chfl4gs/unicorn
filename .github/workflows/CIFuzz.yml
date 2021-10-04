@@ -1,0 +1,70 @@
+name: CIFuzz
+on: [push, pull_request]
+env:
+  CI: true
+
+jobs:
+  fuzz:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { 
+              os: ubuntu-latest,
+              arch: x64,
+              name: 'Linux clang ASAN',
+              flag: address
+            }
+          - { 
+              os: ubuntu-latest,
+              arch: x64,
+              name: 'Linux clang MSAN',
+              flag: memory
+            }
+          - { 
+              os: ubuntu-latest,
+              arch: x64,
+              name: 'Linux clang USAN',
+              flag: undefined
+            }
+          - { 
+              os: ubuntu-latest,
+              arch: x64,
+              name: 'Google OSS-fuzz'
+            }
+        compiler: [ clang ]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build Fuzzers
+      if: contains(matrix.config.name, 'OSS-fuzz')
+      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@master
+      with:
+        oss-fuzz-project-name: 'unicorn'
+        dry-run: false
+    - name: Run Fuzzers
+      if: contains(matrix.config.name, 'OSS-fuzz')
+      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@master
+      with:
+        oss-fuzz-project-name: 'unicorn'
+        fuzz-seconds: 600
+        dry-run: false
+    - name: Upload Crash
+      if: contains(matrix.config.name, 'OSS-fuzz') && failure()
+      uses: actions/upload-artifact@v1
+      with:
+        name: artifacts
+        path: ./out/artifacts
+    - name: Run Fuzzers
+      if: contains(matrix.config.name, 'Linux')
+      shell: 'script -q -e -c "bash {0}"'
+      run: |
+        export PATH=$PATH:/usr/local/opt/binutils/bin
+        export ASAN_OPTIONS=detect_leaks=0
+        export CXXFLAGS="-DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -fsanitize=${{ matrix.config.flag }} -fsanitize=fuzzer-no-link"
+        export CFLAGS="-DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION -fsanitize=${{ matrix.config.flag }} -fsanitize=fuzzer-no-link"
+        export LDFLAGS="-fsanitize=${{ matrix.config.flag }}"
+        make header && make
+        make -C tests/fuzz && sh tests/fuzz/dlcorpus.sh
